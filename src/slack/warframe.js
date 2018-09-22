@@ -420,8 +420,8 @@ function fissures(requestBody) {
  */
 function handleError(error, requestBody, query = "") {
   if (
-    error.message == "No results found." ||
-    error.message == "Request failed with status code 404"
+    error.message === "No results found." ||
+    error.message === "Request failed with status code 404"
   ) {
     error.message = `No results found for *"${query}"*`;
   }

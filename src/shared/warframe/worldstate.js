@@ -253,7 +253,7 @@ function cetus() {
       let expires = "";
 
       ws.syndicateMissions.forEach(mission => {
-        if (mission.syndicate == "Ostrons") {
+        if (mission.syndicate === "Ostrons") {
           mission.jobs.forEach(job => {
             bounties.push({
               type: job.type,
