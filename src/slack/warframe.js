@@ -314,10 +314,21 @@ function baro(requestBody) {
         }*`;
       }
 
+      const attachments = [];
+
+      voidTrader.inventory.forEach(element => {
+        attachments.push({
+          title: element.item,
+          fallback: element.item,
+          text: `Ducats: ${element.ducats}, Credits: ${element.credits}`
+        });
+      });
+
       return messaging.sendSlashMessage(
         requestBody.response_url,
         "in_channel",
-        text
+        text,
+        attachments
       );
     })
     .catch(error => handleError(error, requestBody));

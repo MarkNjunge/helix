@@ -159,13 +159,20 @@ function news() {
 }
 
 /**
+ * @typedef VoidTraderItem
+ * @type {object}
+ * @property {String} item
+ * @property {Number} ducats
+ * @property {Number} credits
+ */
+/**
  * @typedef VoidTraderResult
  * @type {object}
  * @property {Boolean} active
  * @property {String} location
  * @property {String} start
  * @property {String} end
- * @property {String[]} inventory
+ * @property {VoidTraderItem[]} inventory
  */
 /**
  * Void Trader (Baro) details
