@@ -3,6 +3,14 @@ const axios = require("axios").default;
 // @ts-ignore
 const WorldState = require("warframe-worldstate-parser");
 
+function getWorldState() {
+  return axios
+    .get("http://content.warframe.com/dynamic/worldState.php")
+    .then(response => response.data)
+    .then(data => JSON.stringify(data))
+    .then(worldstateData => new WorldState(worldstateData));
+}
+
 /**
  * @typedef AlertReward
  * @type {object}
@@ -30,35 +38,29 @@ const WorldState = require("warframe-worldstate-parser");
  * @returns {Promise<Alert[]>} alerts
  */
 function alerts() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
+  return getWorldState().then(ws => {
+    const result = [];
 
-      const result = [];
-
-      ws.alerts.forEach(alert => {
-        result.push({
-          expiry: moment(alert.expiry).unix(),
-          type: alert.mission.type,
-          node: alert.mission.node.replace(" (", "/").replace(")", ""),
-          faction: alert.mission.faction,
-          minEnemyLevel: alert.mission.minEnemyLevel,
-          maxEnemyLevel: alert.mission.maxEnemyLevel,
-          archwing: alert.mission.archwingRequired,
-          reward: {
-            items: alert.mission.reward.items,
-            credits: alert.mission.reward.credits,
-            asString: alert.mission.reward.asString,
-            thumbnail: alert.mission.reward.thumbnail
-          }
-        });
+    ws.alerts.forEach(alert => {
+      result.push({
+        expiry: moment(alert.expiry).unix(),
+        type: alert.mission.type,
+        node: alert.mission.node.replace(" (", "/").replace(")", ""),
+        faction: alert.mission.faction,
+        minEnemyLevel: alert.mission.minEnemyLevel,
+        maxEnemyLevel: alert.mission.maxEnemyLevel,
+        archwing: alert.mission.archwingRequired,
+        reward: {
+          items: alert.mission.reward.items,
+          credits: alert.mission.reward.credits,
+          asString: alert.mission.reward.asString,
+          thumbnail: alert.mission.reward.thumbnail
+        }
       });
-
-      return result;
     });
+
+    return result;
+  });
 }
 
 /**
@@ -85,37 +87,31 @@ function alerts() {
  * @returns {Promise<SortieResult>}
  */
 function sortie() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
-
-      const result = {
-        // @ts-ignore
-        expiry: moment(ws.sortie.expiry).unix(),
-        // @ts-ignore
-        faction: ws.sortie.faction,
-        // @ts-ignore
-        boss: ws.sortie.boss,
-        // @ts-ignore
-        availableFor: ws.sortie.eta,
-        missions: []
-      };
-
+  return getWorldState().then(ws => {
+    const result = {
       // @ts-ignore
-      ws.sortie.variants.forEach(variant => {
-        result.missions.push({
-          missionType: variant.missionType,
-          modifier: variant.modifier,
-          modifierDescription: variant.modifierDescription,
-          node: variant.node
-        });
-      });
+      expiry: moment(ws.sortie.expiry).unix(),
+      // @ts-ignore
+      faction: ws.sortie.faction,
+      // @ts-ignore
+      boss: ws.sortie.boss,
+      // @ts-ignore
+      availableFor: ws.sortie.eta,
+      missions: []
+    };
 
-      return result;
+    // @ts-ignore
+    ws.sortie.variants.forEach(variant => {
+      result.missions.push({
+        missionType: variant.missionType,
+        modifier: variant.modifier,
+        modifierDescription: variant.modifierDescription,
+        node: variant.node
+      });
     });
+
+    return result;
+  });
 }
 
 /**
@@ -132,30 +128,24 @@ function sortie() {
  * @returns {Promise<News[]>}
  */
 function news() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
+  return getWorldState().then(ws => {
+    const result = [];
+    ws.news.reverse();
 
-      const result = [];
-      ws.news.reverse();
-
-      ws.news.forEach(item => {
-        if (!item.translations.en) {
-          return;
-        }
-        result.push({
-          message: item.translations.en,
-          link: item.link,
-          imageLink: item.imageLink,
-          date: moment(item.date).unix()
-        });
+    ws.news.forEach(item => {
+      if (!item.translations.en) {
+        return;
+      }
+      result.push({
+        message: item.translations.en,
+        link: item.link,
+        imageLink: item.imageLink,
+        date: moment(item.date).unix()
       });
-
-      return result;
     });
+
+    return result;
+  });
 }
 
 /**
@@ -179,28 +169,22 @@ function news() {
  * @returns {Promise<VoidTraderResult>}
  */
 function voidTrader() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
+  return getWorldState().then(ws => {
+    const result = {
+      // @ts-ignore
+      active: ws.voidTrader.active,
+      // @ts-ignore
+      location: ws.voidTrader.location,
+      // @ts-ignore
+      start: ws.voidTrader.startString,
+      // @ts-ignore
+      end: ws.voidTrader.endString,
+      // @ts-ignore
+      inventory: ws.voidTrader.inventory
+    };
 
-      const result = {
-        // @ts-ignore
-        active: ws.voidTrader.active,
-        // @ts-ignore
-        location: ws.voidTrader.location,
-        // @ts-ignore
-        start: ws.voidTrader.startString,
-        // @ts-ignore
-        end: ws.voidTrader.endString,
-        // @ts-ignore
-        inventory: ws.voidTrader.inventory
-      };
-
-      return result;
-    });
+    return result;
+  });
 }
 
 /**
@@ -215,18 +199,10 @@ function voidTrader() {
  * @returns {Promise<EarthResult>}
  */
 function earth() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
-
-      return {
-        isDay: ws.earthCycle.isDay,
-        timeLeft: ws.earthCycle.timeLeft
-      };
-    });
+  return getWorldState().then(ws => ({
+    isDay: ws.earthCycle.isDay,
+    timeLeft: ws.earthCycle.timeLeft
+  }));
 }
 
 /**
@@ -249,37 +225,31 @@ function earth() {
  * @returns {Promise<CetusResult>}
  */
 function cetus() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
+  return getWorldState().then(ws => {
+    const bounties = [];
+    let expires = "";
 
-      const bounties = [];
-      let expires = "";
-
-      ws.syndicateMissions.forEach(mission => {
-        if (mission.syndicate === "Ostrons") {
-          mission.jobs.forEach(job => {
-            bounties.push({
-              type: job.type,
-              enemyLevels: `${job.enemyLevels[0]} - ${job.enemyLevels[1]}`,
-              rewardPool: job.rewardPool
-            });
+    ws.syndicateMissions.forEach(mission => {
+      if (mission.syndicate === "Ostrons") {
+        mission.jobs.forEach(job => {
+          bounties.push({
+            type: job.type,
+            enemyLevels: `${job.enemyLevels[0]} - ${job.enemyLevels[1]}`,
+            rewardPool: job.rewardPool
           });
+        });
 
-          expires = mission.eta;
-        }
-      });
-
-      return {
-        isDay: ws.cetusCycle.isDay,
-        timeLeft: ws.cetusCycle.timeLeft,
-        bounties,
-        expires
-      };
+        expires = mission.eta;
+      }
     });
+
+    return {
+      isDay: ws.cetusCycle.isDay,
+      timeLeft: ws.cetusCycle.timeLeft,
+      bounties,
+      expires
+    };
+  });
 }
 
 /**
@@ -297,27 +267,21 @@ function cetus() {
  * @returns {Promise<Fissure[]>}
  */
 function fissures() {
-  return axios
-    .get("http://content.warframe.com/dynamic/worldState.php")
-    .then(response => response.data)
-    .then(data => JSON.stringify(data))
-    .then(worldstateData => {
-      const ws = new WorldState(worldstateData);
+  return getWorldState().then(ws => {
+    const results = [];
 
-      const results = [];
-
-      ws.fissures.forEach(fissure => {
-        results.push({
-          node: fissure.node.replace(" (", "/").replace(")", ""),
-          missionType: fissure.missionType,
-          enemy: fissure.enemy,
-          tier: fissure.tier,
-          expires: fissure.eta
-        });
+    ws.fissures.forEach(fissure => {
+      results.push({
+        node: fissure.node.replace(" (", "/").replace(")", ""),
+        missionType: fissure.missionType,
+        enemy: fissure.enemy,
+        tier: fissure.tier,
+        expires: fissure.eta
       });
-
-      return results;
     });
+
+    return results;
+  });
 }
 
 module.exports = { alerts, sortie, news, voidTrader, earth, cetus, fissures };
