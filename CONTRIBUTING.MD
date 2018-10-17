@@ -14,9 +14,27 @@
 4. Push to the branch: `git push origin fix-my-bugfix`
 5. Submit a pull request.
 
-### Adding other bots
+## Adding other bots
 
 Create a folder in src for the bot e.g. _src/discord_. This folder should **only** contain code specific to that bot, all core functions should go under _src/shared_.
+
+## Adding commands for Slack
+
+To add a command for Slack, add a new js file to _src/slack/commands_. The file should export a single object.
+
+```JavaScript
+module.exports = {
+  name: "command-name",
+  description: "Command description",
+  usage: "",
+  execute: requestBody => {
+    // ...
+  }
+};
+```
+
+`usage` (optional) is used to give an example of how to use the command. It is required for commands that take arguments.  
+`execute` should contain all the logic, including sending the message.
 
 ## Things to note
 
@@ -26,4 +44,4 @@ Create a folder in src for the bot e.g. _src/discord_. This folder should **only
 
 - If you are using [VS Code](https://code.visualstudio.com/), the settings in _.vscode_ will achieve the desired formatting.
 
-- It'll be ideal if you create an issue before making a pull request.
+- It'll be preferred if you create an issue before making a pull request.
