@@ -16,7 +16,7 @@
 
 ## Adding other bots
 
-Create a folder in src for the bot e.g. _src/discord_. This folder should **only** contain code specific to that bot, all core functions should go under _src/shared_.
+Create a folder in src for the bot e.g. _src/reddit_. This folder should **only** contain code specific to that bot, all core functions should go under _src/shared_.
 
 ## Adding commands for Slack
 
@@ -34,6 +34,24 @@ module.exports = {
 ```
 
 `usage` (optional) is used to give an example of how to use the command. It is required for commands that take arguments.  
+`execute` should contain all the logic, including sending the message.
+
+## Adding commands for Discord
+
+To add a command for Discord, add a new js file to _src/discord/commands_. The file should export a single object.
+
+```JavaScript
+module.exports = {
+  name: "command-name",
+  description: "Command description",
+  usage: "",
+  execute: message => {
+    // ...
+  }
+};
+```
+
+`usage` is used to give an arguments to be used with the command.  
 `execute` should contain all the logic, including sending the message.
 
 ## Things to note
