@@ -1,5 +1,5 @@
 {
-  "javascript.implicitProjectConfig.checkJs": true,
+  "javascript.implicitProjectConfig.checkJs": false,
   "prettier.singleQuote": false,
   "prettier.semi": true,
   "prettier.useTabs": false,

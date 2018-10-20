@@ -26,6 +26,7 @@ winston.configure({
 
 const config = require("./config");
 const slack = require("./slack");
+require("./discord");
 
 const PORT = config.port || process.argv[2] || 3000;
 
