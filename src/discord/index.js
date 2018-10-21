@@ -67,9 +67,12 @@ client.on("message", async message => {
   }
 
   try {
+    message.channel.startTyping();
     await command.execute(message, args);
     await message.react("✅");
+    message.channel.stopTyping();
   } catch (error) {
+    message.channel.stopTyping();
     winston.error(error);
     message.reply("There was an error trying to execute that command!");
   }
