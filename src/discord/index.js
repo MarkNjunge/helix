@@ -21,8 +21,12 @@ client.on("ready", () => {
 });
 
 client.on("message", async message => {
-  // Ignore if the message is not a request to the bot or was made by the bot
-  if (!message.content.startsWith(prefix) || message.author.bot) {
+  /* The message is ignored if it was made by a bot or it doesn't start with the prefix
+   and isn't a DM (DM doesnt need the prefix) */
+  if (
+    message.author.bot ||
+    !message.content.startsWith(prefix) && !message.channel.type === "dm"
+  ) {
     return;
   }
 
@@ -33,10 +37,16 @@ client.on("message", async message => {
   );
 
   // Extract args from message by splitting at spaces
-  const args = message.content
-    .slice(prefix.length)
-    .trim()
-    .split(/ +/);
+  let args;
+  // DMs don't need a prefix
+  if (!message.content.startsWith(prefix) && message.channel.type === "dm") {
+    args = message.content.split(/ +/);
+  } else {
+    args = message.content
+      .slice(prefix.length)
+      .trim()
+      .split(/ +/);
+  }
 
   // Use the first arg command name
   const commandName = args.shift().toLowerCase();
