@@ -23,10 +23,14 @@ client.on("ready", () => {
 client.on("message", async message => {
   /* The message is ignored if it was made by a bot or it doesn't start with the prefix
    and isn't a DM (DM doesnt need the prefix) */
-  if (
-    message.author.bot ||
-    !message.content.startsWith(prefix) && !message.channel.type === "dm"
+  if (message.author.bot) {
+    return;
+  } else if (
+    !message.content.startsWith(prefix) &&
+    message.channel.type === "dm"
   ) {
+    // Prevent the next if block from succeeding
+  } else if (!message.content.startsWith(prefix)) {
     return;
   }
 
