@@ -1,6 +1,11 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const winston = require("winston");
+const fs = require("fs");
+
+if (!fs.existsSync(__dirname + "/../logs")) {
+  fs.mkdirSync(__dirname + "/../logs");
+}
 
 // Initialize logger
 const { combine, timestamp, printf } = winston.format;
@@ -13,12 +18,7 @@ winston.configure({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: "./logs/combined.log",
-      format: combine(timestamp(), customFormat)
-    }),
-    new winston.transports.File({
-      level: "error",
-      filename: "./logs/error.log",
+      filename: __dirname + "/../logs/combined.log",
       format: combine(timestamp(), customFormat)
     })
   ]
