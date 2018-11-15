@@ -13,7 +13,7 @@ module.exports = {
       data.push("Here's a list of all my commands:");
       data.push(commands.map(command => command.name).join(", "));
       data.push(
-        `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
+        `\nYou can send \`${prefix} help [command name]\` to get info on a specific command!`
       );
 
       await message.author.send(data, { split: true });
@@ -43,7 +43,7 @@ module.exports = {
     if (command.description) {
       data.push(`**Description:** ${command.description}`);
     }
-    data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+    data.push(`**Usage:** ${prefix} ${command.name} ${command.usage}`);
     data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
     message.channel.send(data, { split: true });
