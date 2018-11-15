@@ -284,4 +284,34 @@ function fissures() {
   });
 }
 
-module.exports = { alerts, sortie, news, voidTrader, earth, cetus, fissures };
+/**
+ * @typedef VallisCycle
+ * @type {Object}
+ * @property {Boolean} isWarm
+ * @property {String} timeLeft
+ * @property {String} shortString
+ * @property {Date} expiry
+ */
+/**
+ * Get the current cycle on Orb Vallis
+ * @returns {Promise<VallisCycle>}
+ */
+function vallis() {
+  return getWorldState().then(ws => ({
+    isWarm: ws.vallisCycle.isWarm,
+    timeLeft: ws.vallisCycle.timeLeft,
+    shortString: ws.vallisCycle.shortString,
+    expiry: new Date(ws.vallisCycle.expiry)
+  }));
+}
+
+module.exports = {
+  alerts,
+  sortie,
+  news,
+  voidTrader,
+  earth,
+  cetus,
+  fissures,
+  vallis
+};
