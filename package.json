@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/app.js",
-    "server": "nodemon src/app.js"
+    "server": "nodemon src/app.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -17,9 +19,11 @@
     "moment": "^2.22.2",
     "striptags": "^3.1.1",
     "warframe-worldstate-parser": "^2.1.23",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "snyk": "^1.161.1"
   },
   "engines": {
     "node": ">=8.11.3"
-  }
+  },
+  "snyk": true
 }
